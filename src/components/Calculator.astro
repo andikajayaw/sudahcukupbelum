@@ -90,6 +90,13 @@
 <script is:inline>
     const historyCount = [];
 
+    function resetInput() {
+        document.getElementById("wage").reset();
+        document.getElementById("days").reset();
+        document.getElementById("price").reset();
+        document.getElementById("percent").reset();
+    }
+
     function myFunction() {
         let wage = document.getElementById("wage").value;
         let days = document.getElementById("days").value;
@@ -97,9 +104,9 @@
         let percent = document.getElementById("percent").value;
 
         let dayWage = Number(wage) / (Number(days) * 4);
-        let dayOfWork = Number(price) / dayWage;
+        let dayOfWork = Math.floor(Number(price) / dayWage);
         let savings = dayWage * (percent / 100);
-        let dayOfSaving = Number(price) / savings;
+        let dayOfSaving = Math.floor(Number(price) / savings);
         
         historyCount.push({
             wage,
@@ -117,7 +124,10 @@
             currency: "IDR",
         }).format(savings);
         document.getElementById("title-result").innerHTML =
-            `Gaji harian Anda adalah: ${dayWage}<br>Jika disisihkan ${percent}% dari gaji harian ini maka jumlahnya adalah: ${savings}`;
+            `Gaji harian Anda adalah: ${dayWage}<br>Jika disisihkan ${percent}% dari gaji harian diatas untuk ditabung maka jumlahnya adalah: ${savings}<br>Harga barang yang ingin Anda beli: ${new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+        }).format(price)}`;
         if (dayOfWork >= 10) {
             document.getElementById("desc-result").innerHTML =
                 `Butuh usaha keras untuk barang ini! Pertimbangkan kembali pembelian Anda.<br> Harga barang tersebut setara dengan ${dayOfWork} hari kerja Anda dan Anda perlu menabung ${percent}% dari hasil gaji harian Anda sampai ${dayOfSaving} hari.`;
@@ -126,7 +136,7 @@
                 `Barang ini cukup terjangkau dengan gaji Anda!. Harga barang tersebut setara dengan ${dayOfWork} hari kerja Anda atau Anda hanya perlu menabung selama ${dayOfSaving} hari.`;
         }
         my_modal_1.showModal();
-
+        resetInput();
         console.log(historyCount);
     }
 </script>
