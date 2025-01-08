@@ -1,0 +1,132 @@
+<div class="flex justify-center p-4 gap-4">
+    <div class="card bg-neutral text-neutral-content">
+        <div class="card-body">
+            <label class="form-control w-full">
+                <div class="label">
+                    <span class="label-text">Berapa pendapatanmu?</span>
+                </div>
+                <input
+                    id="wage"
+                    name="wage"
+                    type="number"
+                    placeholder="Type here"
+                    class="input input-bordered w-full"
+                />
+                <div class="label">
+                    <span class="label-text-alt text-xs">*dalam satu bulan</span
+                    >
+                </div>
+            </label>
+            <label class="form-control w-full">
+                <div class="label">
+                    <span class="label-text">Jumlah Hari Kerja</span>
+                </div>
+                <select id="days" class="select select-bordered">
+                    <option disabled selected>Pilih hari kerja</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+                <div class="label">
+                    <span class="label-text-alt text-xs"
+                        >*dalam satu minggu</span
+                    >
+                </div>
+            </label>
+            <label class="form-control w-full">
+                <div class="label">
+                    <span class="label-text">Harga wishlistmu?</span>
+                </div>
+                <input
+                    id="price"
+                    name="price"
+                    type="number"
+                    placeholder="Type here"
+                    class="input input-bordered w-full"
+                />
+            </label>
+            <label class="form-control w-full">
+                <div class="label">
+                    <span class="label-text">Berapa persen dari gaji?</span>
+                </div>
+                <input
+                    id="percent"
+                    name="percent"
+                    type="number"
+                    placeholder="Type here"
+                    class="input input-bordered w-full"
+                />
+                <div class="label">
+                    <span class="label-text-alt text-xs">*dari hasil perhitungan gaji harian. Berapa persen yang akan km sisihkan agar dapat membeli barang ini</span
+                    >
+                </div>
+            </label>
+            <div class="card-actions justify-center mt-4 w-full">
+                <button
+                    id="btn-count"
+                    name="btn-count"
+                    class="btn btn-primary w-full"
+                    onclick="myFunction()">Hitung Sekarang</button
+                >
+            </div>
+        </div>
+    </div>
+
+    <dialog id="my_modal_1" class="modal">
+        <div class="modal-box">
+            <h3 class="text-lg font-bold">Hasil Perhitungan</h3>
+            <p id="title-result" class="py-4"></p>
+            <p id="desc-result" class="py-4"></p>
+            <div class="modal-action">
+                <form method="dialog">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button class="btn">Tutup</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+</div>
+
+<script is:inline>
+    const historyCount = [];
+
+    function myFunction() {
+        let wage = document.getElementById("wage").value;
+        let days = document.getElementById("days").value;
+        let price = document.getElementById("price").value;
+        let percent = document.getElementById("percent").value;
+
+        let dayWage = Number(wage) / (Number(days) * 4);
+        let dayOfWork = Number(price) / dayWage;
+        let savings = dayWage * (percent / 100);
+        let dayOfSaving = Number(price) / savings;
+        
+        historyCount.push({
+            wage,
+            days,
+            price,
+            dayWage,
+            dayOfWork
+        })
+        dayWage = new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+        }).format(dayWage);
+        savings = new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+        }).format(savings);
+        document.getElementById("title-result").innerHTML =
+            `Gaji harian Anda adalah: ${dayWage}<br>Jika disisihkan ${percent}% dari gaji harian ini maka jumlahnya adalah: ${savings}`;
+        if (dayOfWork >= 10) {
+            document.getElementById("desc-result").innerHTML =
+                `Butuh usaha keras untuk barang ini! Pertimbangkan kembali pembelian Anda.<br> Harga barang tersebut setara dengan ${dayOfWork} hari kerja Anda dan Anda perlu menabung ${percent}% dari hasil gaji harian Anda sampai ${dayOfSaving} hari.`;
+        } else {
+            document.getElementById("desc-result").innerHTML =
+                `Barang ini cukup terjangkau dengan gaji Anda!. Harga barang tersebut setara dengan ${dayOfWork} hari kerja Anda atau Anda hanya perlu menabung selama ${dayOfSaving} hari.`;
+        }
+        my_modal_1.showModal();
+
+        console.log(historyCount);
+    }
+</script>
